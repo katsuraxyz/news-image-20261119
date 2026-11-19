@@ -3171,76 +3171,69 @@ def hero_art(c,kind,x,y,w,h):
     else: illustration(c,kind,x,y,w,h)
 
 def hero(c,x,y,w,story,n):
-    """Prominent illustrated headline. Every text box is hard-clipped."""
+    """Hero story, enlarged because section mastheads were removed."""
     loc,heading,dek,source,kind=story
-    c.rect(x,y,x+w,y+297,SHEET)
-    # Keep the illustration informative, but give more vertical room to copy.
-    hero_art(c,kind,x+3,y+3,w-6,122)
-    c.rect(x+9,y+133,x+14,y+151,RED3)
-    fit_safe(c,f'{n:02d} / {loc}',x+23,y+133,w-30,19,'b',(13,12,11),RED3,1)
-    fit_safe(c,heading,x+9,y+157,w-18,75,'b',(26,22,20,18),INK3,3)
-    # Larger body text than R5; no intentional overflow or ellipsis.
-    fit_safe(c,dek,x+9,y+237,w-18,50,'r',(16,15,14),FADE,3)
-    c.rect(x+9,y+291,x+w-9,y+292,RULE3)
+    panel_h=320
+    c.rect(x,y,x+w,y+panel_h,SHEET)
+    hero_art(c,kind,x+3,y+3,w-6,132)
+    c.rect(x+9,y+143,x+14,y+160,RED3)
+    fit_safe(c,f'{n:02d} / {loc}',x+23,y+143,w-30,19,'b',(14,13,12),RED3,1)
+    fit_safe(c,heading,x+9,y+168,w-18,79,'b',(32,26,22,20),INK3,3)
+    fit_safe(c,dek,x+9,y+253,w-18,56,'r',(18,17,16,15),FADE,3)
+    c.rect(x+9,y+315,x+w-9,y+316,RULE3)
 
 
 def editor_card(c,x,y,w,item,n):
-    """Mini illustration + prominent location label + 2-line brief."""
+    """Larger story card, with artwork and bigger text."""
     loc,heading,ix,source=item
-    c.rect(x,y,x+w,y+107,SHEET)
-    icon_scene(c,'NEWS',ix,x+4,y+4,w-8,43)
-    c.rect(x+7,y+6,x+37,y+32,(31,43,45))
-    fit_safe(c,f'{n:02d}',x+12,y+8,25,23,'b',(17,16),SHEET,1)
-    c.rect(x+3,y+51,x+6,y+101,RED3)
-    fit_safe(c,loc,x+13,y+52,w-20,17,'b',(12,11,10),RED3,1)
-    fit_safe(c,heading,x+13,y+70,w-21,32,'b',(16,15,14,13),INK3,2)
-    c.rect(x+6,y+105,x+w-6,y+106,RULE3)
+    panel_h=141
+    c.rect(x,y,x+w,y+panel_h,SHEET)
+    icon_scene(c,'NEWS',ix,x+4,y+4,w-8,57)
+    c.rect(x+7,y+6,x+39,y+36,(31,43,45))
+    fit_safe(c,f'{n:02d}',x+12,y+9,26,24,'b',(18,17,16),SHEET,1)
+    c.rect(x+3,y+65,x+6,y+132,RED3)
+    fit_safe(c,loc,x+13,y+65,w-20,19,'b',(13,12,11),RED3,1)
+    fit_safe(c,heading,x+13,y+89,w-21,43,'b',(20,18,17,16),INK3,3)
+    c.rect(x+6,y+139,x+w-6,y+140,RULE3)
 
 
 def render():
     c=Canvas(color=PAPER)
-    c.rect(0,0,1024,7,RED3)
-    c.text('THE WORLD IN ONE DAY',24,17,'b',13,RED3)
-    c.text('GLOBAL EDITION / 25 REPORTS',794,19,'b',11,FADE)
-    c.rect(24,38,1000,40,INK3)
-    c.text('Thursday',24,48,'b',48,INK3)
-    c.text('19 November 2026',260,56,'b',36,INK3)
-    c.rect(24,112,1000,114,INK3)
+    # Date is the only masthead. Remove all redundant report counts, section
+    # slogans, topical ribbons and technical credits to maximize article area.
+    c.rect(0,0,1024,5,RED3)
+    c.text('Thursday',24,18,'b',48,INK3)
+    c.text('19 November 2026',277,24,'b',39,INK3)
+    c.rect(24,84,1000,87,INK3)
 
-    # Removed the 85-pixel slogan/map strip from R5. The saved room is
-    # reserved for larger text and greater leading rather than more stories.
-    c.text('THE BIG THREE',24,122,'b',16,INK3)
-    c.text('DIPLOMACY  /  FINANCE  /  JUSTICE',667,126,'b',11,RED3)
-    c.rect(24,150,1000,151,RULE3)
+    # No 'THE BIG THREE' strip: use the full height for illustration and copy.
     for i,story in enumerate(LEADS):
-        hero(c,24+i*329,157,318,story,i+1)
+        hero(c,24+i*329,98,318,story,i+1)
 
-    c.rect(24,464,1000,466,INK3)
-    c.text("EDITOR'S SELECTION",24,474,'b',16,INK3)
-    c.text('8 REPORTS   /   CLIMATE   /   CONFLICT   /   TRADE',589,479,'b',10,RED3)
-    c.rect(24,510,1000,511,RULE3)
+    # No 'EDITOR'S SELECTION' strip: the art/cards indicate story hierarchy.
     for i,story in enumerate(PICKS):
         r,k=divmod(i,4)
-        editor_card(c,24+k*247,518+r*112,236,story,i+4)
+        editor_card(c,24+k*247,430+r*148,236,story,i+4)
 
-    c.rect(24,743,1000,745,INK3)
-    c.text('THE WORLD WIRE',24,753,'b',17,INK3)
-    c.text('14 BRIEFS FROM SEVEN REGIONS',715,759,'b',10,RED3)
-    c.rect(24,785,1000,786,RULE3)
+    # Seven named regional desks, set as four wider cards above three even
+    # wider cards. Both report headlines remain in each desk (14 total).
+    # This avoids unreadable seven-column microtype and broken words.
     for i,(name,accent,items) in enumerate(DESKS):
-        x=24+i*141;w=135;y=792
-        c.rect(x,y,x+w,y+29,(227,226,215))
-        c.rect(x,y,x+5,y+29,accent)
-        fit_safe(c,name,x+9,y+6,w-12,20,'b',(13,12,11),INK3,1)
-        for k,item in enumerate(items):
-            yy=y+34+k*92
-            c.text(f'{12+i*2+k:02d}',x+2,yy+5,'b',12,RED3)
-            fit_safe(c,item,x+24,yy+4,w-26,84,'r',(18,17,16,15),INK3,5)
-            c.rect(x,yy+89,x+w,yy+90,RULE3)
-
-    c.rect(24,1011,1000,1013,INK3)
-    c.text('19 NOVEMBER 2026   /   REPORTING CREDITS IN SOURCES.md',24,1015,'b',9,FADE)
-    c.text('PURE PYTHON STDLIB  /  1024 x 1024',760,1015,'b',9,FADE)
+        if i < 4:
+            x=24+i*247; y=738; w=236
+            sizes=(20,18,17,16)
+        else:
+            x=24+(i-4)*329; y=883; w=318
+            sizes=(20,18,17,16)
+        c.rect(x,y,x+w,y+135,SHEET)
+        c.rect(x,y,x+w,y+30,(229,229,220))
+        c.rect(x,y,x+5,y+30,accent)
+        fit_safe(c,name,x+12,y+5,w-20,23,'b',(16,15,14),INK3,1)
+        fit_safe(c,f'{12+i*2:02d}',x+9,y+39,23,21,'b',(13,12),RED3,1)
+        fit_safe(c,items[0],x+36,y+36,w-44,43,'r',sizes,INK3,3)
+        c.rect(x+9,y+81,x+w-9,y+82,RULE3)
+        fit_safe(c,f'{13+i*2:02d}',x+9,y+91,23,21,'b',(13,12),RED3,1)
+        fit_safe(c,items[1],x+36,y+89,w-44,42,'r',sizes,INK3,3)
     return c
 
 def main():
