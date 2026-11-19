@@ -2841,304 +2841,409 @@ def draw_fit(canvas, message, x, y, width, height, family, sizes, color,
     return lines,size
 
 
-# ----- Editorial front page. No image or font files are read at runtime. -----
-CREAM=(249,247,241)
-WHITE=(255,254,250)
-INK2=(29,39,39)
-MUTED2=(94,101,99)
-RULE=(209,211,202)
-RED=(176,66,54)
-TEAL=(33,99,98)
-MIDNIGHT=(20,45,56)
-GOLD2=(218,154,70)
-PALEBLUE=(220,236,231)
-PALECORAL=(244,221,211)
+# ----- 40-story newspaper edition; all rendering offline -----
+PAPER=(249,247,241)
+SHEET=(255,254,250)
+INK3=(28,33,31)
+DARK=(35,46,48)
+FADE=(90,94,91)
+RULE3=(198,196,188)
+RED3=(161,54,48)
+TEAL3=(32,96,92)
+OCHRE=(172,124,55)
+BLUE3=(57,81,108)
 
 LEADS = [
-    ('SHENZHEN / DIPLOMACY', 'Trump, Xi, Putin at APEC',
-     'Nuclear arms, Ukraine and trade headline the three-way summit.', 'AP / REUTERS', 'summit', 'POLITICS'),
-    ('NEW YORK / TECHNOLOGY', 'Anthropic sets IPO at $83',
-     'The AI group prices a record offering ahead of its market debut.', 'REUTERS', 'market', 'ECONOMY'),
-    ('ANTALYA / CLIMATE', 'COP31 enters final stretch',
-     'Climate finance and fossil-fuel language divide negotiators.', 'UNFCCC / RTE', 'climate', 'CLIMATE'),
+    ('SHENZHEN / DIPLOMACY',
+     'Trump, Xi, Putin hold first three-way summit',
+     'The leaders agree to explore UN reforms and nuclear-risk talks. Ukraine and Iran remain unresolved.',
+     'AP / 19 NOV', 'summit'),
+    ('CRIMEA / UKRAINE',
+     'Third strike disrupts Crimean Bridge',
+     'Russian officials report interrupted crossings after another attack on the route linking Russia and Crimea.',
+     'REUTERS / 19 NOV', 'bridge'),
+    ('NEW YORK / TECHNOLOGY',
+     'Anthropic prices record IPO at $83',
+     'The Claude developer enters public markets amid rising AI investment and questions over future costs.',
+     'AP / 19 NOV', 'market'),
 ]
 
-SPOTLIGHT = [
-    ('KERCH / WAR', 'Crimean Bridge struck for third time in a week', 'SECURITY', 'bridge'),
-    ('BRUSSELS / TRADE', 'EU backs signing of trade pact with Indonesia', 'ECONOMY', 'trade'),
-    ('THE HAGUE / LAW', 'UN court sets Myanmar genocide-case judgment', 'POLITICS', 'court'),
-    ('FLORIDA / WEATHER', 'US forecasters warn of eastern Florida floods', 'CLIMATE', 'rain'),
-    ('CARACAS / SECURITY', 'US and Venezuela announce military pact', 'SECURITY', 'shield'),
-    ('APEC / ECONOMY', 'IMF flags inflation risk despite AI-led growth', 'ECONOMY', 'bars'),
-    ('SHENZHEN / TRADE', 'Xi pledges $20m to APEC cooperation', 'POLITICS', 'globe'),
-    ('CALIFORNIA / RAIN', 'Atmospheric river raises flash-flood risk', 'CLIMATE', 'rain'),
-    ('PYONGYANG / ATOMS', 'IAEA monitors North Korean nuclear activity', 'SECURITY', 'atom'),
-    ('HORMUZ / OIL', 'Energy shipping braces for Gulf disruption', 'ECONOMY', 'ship'),
+# 10 hand-selected stories (two rows, five columns).
+PICKS = [
+    ('ANTALYA / COP31', 'Climate summit races to settle finance deal', 'CLIMATE'),
+    ('IRAN / GULF', 'Iran attacks Gulf sites after US Qeshm strike', 'WAR'),
+    ('GAZA / CONFLICT', 'Israeli troops push beyond ceasefire line', 'WAR'),
+    ('BRUSSELS / TRADE', 'EU governments approve Indonesia trade pact', 'TRADE'),
+    ('THE HAGUE / JUSTICE', 'World court weighs Rohingya genocide case', 'POLITICS'),
+    ('EUROPE / UKRAINE', 'EU proposes EUR45bn loan to support Kyiv', 'TRADE'),
+    ('INDIA / STORM', 'Cyclone Aqwan heads toward India east coast', 'CLIMATE'),
+    ('RIYADH / YEMEN', 'Houthi missile threat alarms Saudi Arabia', 'WAR'),
+    ('CALIFORNIA / WEATHER', 'Record atmospheric river rain hits US', 'CLIMATE'),
+    ('PACIFIC / DROUGHT', 'Fiji and Tonga face El Nino emergencies', 'CLIMATE'),
 ]
 
-WIRE = [
-    ('ASIA / PACIFIC', (35,121,128), [
-      'DPRK: Uranium enrichment draws scrutiny',
-      'Jakarta: Asset recovery bill in focus',
-      'Fiji: Pacific drought alerts intensify',
-      'Seoul: Exam integrity rules debated',
-      'Dhaka: Wage protests test leaders',
-      'Canberra: Job market softens',
-      'Shenzhen: APEC trade talks continue',
+# Five regional desks, 27 briefs. Each item is its own story, not a duplicate.
+DESKS = [
+    ('ASIA / PACIFIC', TEAL3, [
+        'Indonesia passes asset seizure legislation',
+        'IAEA flags North Korea uranium expansion',
+        'Japan insists Taiwan stance has not changed',
+        'South Korea exam tightens anti-AI checks',
+        'Bangladesh wage protests fuel unrest',
+        'Australia unemployment rate rises to 4.9%',
     ]),
-    ('MIDDLE EAST', (178,97,62), [
-      'Gaza: Ceasefire lines remain contested',
-      'Yemen: Missile fears persist',
-      'Saudi: Air defenses on alert',
-      'Iran: Gulf tensions hit energy',
-      'West Bank: Settlement plan disputed',
-      'Ankara: Opposition faces pressure',
-      'Hormuz: Tanker routes monitored',
+    ('MIDDLE EAST', (165,95,62), [
+        'Israel delays West Bank E1 settlement',
+        'Trump alleges Iran is studying bio-weapons',
+        'Turkey court sentences CHP figures',
+        'Oil traders weigh Strait of Hormuz risks',
+        'Iran bus crash fuels regional protests',
     ]),
-    ('EUROPE / AFRICA', (89,103,156), [
-      'Berlin: Ukraine aid plans debated',
-      'Antalya: COP31 finance divide widens',
-      'Sudan: Fighting displaces civilians',
-      'Cairo: IMF deal draws attention',
-      'Horn of Africa: Border fears grow',
-      'Tanzania: Opposition under pressure',
-      'Japan: PM raises detained journalist case',
+    ('EUROPE', BLUE3, [
+        'Zelensky allies gather for Berlin peace talks',
+        'Hungary opens bribery network inquiry',
+        'Spanish election candidates turn to YouTube',
+        'Five EU nations examine Rwanda asylum plan',
+        'Chelsea defeat PSG in Womens Champions League',
     ]),
-    ('AMERICAS / SCIENCE', (162,96,110), [
-      'Alaska: Senate result draws reaction',
-      'Fed: AI investment risks debated',
-      'California: Robotaxi safety scrutinized',
-      'US: Measles risks spur concern',
-      'Haiti: Assassination plot trial continues',
-      'Voyager: Deep-space distance milestone',
-      'Webb: New stellar observations released',
+    ('AFRICA', (131,88,97), [
+        'Sudan drone attacks drive more displacement',
+        'Senegal ruling party expels President Faye',
+        'DR Congo prepares Ebola vaccine trials',
+        'Egypt IMF funding deal unlocks $2.3bn',
+        'Ethiopia and Eritrea mass border troops',
+    ]),
+    ('AMERICAS', (118,93,59), [
+        'Alaska Senate victory boosts Democrats',
+        'Fed minutes warn of AI investment risks',
+        'US and Venezuela restore military ties',
+        'Argentina advances primary election bill',
+        'Brazil isolated Awa group makes rare contact',
+        'Haiti assassination case ends in conviction',
     ]),
 ]
-assert len(LEADS)+len(SPOTLIGHT)+sum(len(x[2]) for x in WIRE)==41
+N_FEATURED = len(LEADS) + len(PICKS)
+N_WIRE = sum(len(items) for _,_,items in DESKS)
+N_STORIES = N_FEATURED+N_WIRE
+assert (len(LEADS),len(PICKS),N_WIRE,N_STORIES)==(3,10,27,40)
 
-COLOR_BY_TOPIC={
-  'POLITICS':(163,75,62), 'ECONOMY':(38,129,113),
-  'CLIMATE':(128,143,76), 'SECURITY':(163,92,68),
-}
-
-def poly(c, points, color):
-    if len(points)<3:return
-    y0=max(0,int(min(y for x,y in points))); y1=min(c.height-1,int(max(y for x,y in points)))
-    for y in range(y0,y1+1):
-        crossings=[]; scan=y+.5
+def polygon(c, points, color):
+    if len(points) < 3:
+        return
+    y0 = max(0, int(min(p[1] for p in points)))
+    y1 = min(c.height-1, int(max(p[1] for p in points)))
+    for yy in range(y0, y1+1):
+        crosses=[]
         for i in range(len(points)):
-            ax,ay=points[i]; bx,by=points[(i+1)%len(points)]
-            if (ay<=scan<by) or (by<=scan<ay):
-                crossings.append(ax+(scan-ay)*(bx-ax)/(by-ay))
-        crossings.sort()
-        for i in range(0,len(crossings)-1,2):
-            c.rect(int(crossings[i]),y,int(crossings[i+1])+1,y+1,color)
+            x0,t0=points[i];x1,t1=points[(i+1)%len(points)]
+            if (t0 <= yy+.5 < t1) or (t1 <= yy+.5 < t0):
+                crosses.append(x0 + (yy+.5-t0)*(x1-x0)/(t1-t0))
+        crosses.sort()
+        for j in range(0,len(crosses)-1,2):
+            c.rect(int(crosses[j]), yy, int(crosses[j+1])+1, yy+1, color)
 
-def filled_disc(c,x,y,r,color):
+
+def disc(c,x,y,r,color):
     for dy in range(-int(r),int(r)+1):
-        half=math.sqrt(max(0,r*r-dy*dy))
-        c.rect(int(x-half),int(y+dy),int(x+half+1),int(y+dy+1),color)
+        dx=math.sqrt(max(0,r*r-dy*dy))
+        c.rect(int(x-dx),int(y+dy),int(x+dx+1),int(y+dy+1),color)
 
-def fit_exact(c, message, x,y,w,h,family,sizes,color,max_lines, leading=1.13):
+
+def typeset(c,text,x,y,w,h,family,sizes,color,max_lines=2,leading=1.10):
     for size in sizes:
-        if f'{family}{size}' not in FONT_META: continue
-        lines=wrap_words(message,family,size,w)
+        if family+str(size) not in FONT_META:
+            continue
+        lines=wrap_words(text,family,size,w)
         step=max(size+1,round(size*leading))
-        if len(lines)<=max_lines and len(lines)*step<=h:
-            for i,s in enumerate(lines):
-                assert text_width(s,family,size)<=w
-                c.text(s,x,y+i*step,family,size,color,clip=(x,y,x+w,y+h))
-            return lines
-    raise AssertionError('Text does not fit: '+repr(message))
+        if len(lines) <= max_lines and len(lines)*step <= h:
+            for j,line in enumerate(lines):
+                assert text_width(line,family,size) <= w, (text,line)
+                c.text(line,x,y+j*step,family,size,color,clip=(x,y,x+w,y+h))
+            return lines,size
+    raise ValueError('Not fitting: '+repr(text))
 
-def image_summit(c,x,y,w,h):
-    c.gradient(x,y,x+w,y+h,(22,46,67),(48,84,99))
-    c.circle(x+w-45,y+24,30,(70,117,132),2)
-    for ix,hh in enumerate((42,65,51,82,40,63,72,47)):
-        xx=x+6+ix*44
-        c.rect(xx,y+h-hh,xx+33,y+h,(21,58,73))
-        for wx in range(xx+6,xx+30,12):
-            for wy in range(y+h-hh+13,y+h-7,19): c.rect(wx,wy,wx+4,wy+6,(109,148,144))
-    # Flag blocks + three leaders in silhouette; illustration, not portraits.
-    for i,(bg,fg) in enumerate((((235,238,234),(177,63,56)),((178,48,52),(234,211,86)),((234,239,239),(52,91,148)))):
-        cx=x+65+i*92
-        c.rect(cx-25,y+20,cx+25,y+41,bg)
-        if i==0:
-            for j in range(3):c.rect(cx-25,y+21+j*7,cx+25,y+24+j*7,fg)
-        elif i==1:
-            filled_disc(c,cx-12,y+28,3,fg)
-        else:
-            c.rect(cx-25,y+22,cx+25,y+26,fg);c.rect(cx-25,y+33,cx+25,y+37,fg)
-        filled_disc(c,cx,y+67,12,(232,190,151))
-        poly(c,[(cx-23,y+109),(cx-19,y+85),(cx-9,y+81),(cx,y+93),(cx+10,y+81),(cx+20,y+87),(cx+25,y+109)],(24,35,47))
-        c.rect(cx-29,y+103,cx+30,y+116,(131,163,158))
-    c.rect(x,y+h-2,x+w,y+h,(216,160,83))
 
-def image_market(c,x,y,w,h):
-    c.gradient(x,y,x+w,y+h,(7,56,56),(29,98,90))
-    for j in range(5):
-        c.line(x+18,y+16+j*20,x+w-13,y+16+j*20,(44,109,100))
-    for i,ht in enumerate((25,37,29,53,45,70,60,81,96)):
-        xx=x+15+i*32;hh=int(ht*.74)
-        c.rect(xx,y+h-15-hh,xx+17,y+h-15,(43,144,124))
-        c.rect(xx,y+h-15-hh,xx+17,y+h-12-hh,(116,202,155))
-    coords=[(x+10,y+80),(x+43,y+75),(x+76,y+76),(x+107,y+61),(x+137,y+68),(x+171,y+50),(x+202,y+47),(x+234,y+31),(x+275,y+16),(x+305,y+22)]
-    for a,b in zip(coords,coords[1:]):c.line(*a,*b,(242,188,106),3)
-    c.roundrect(x+17,y+13,x+109,y+49,4,(13,68,66))
-    c.text('$83',x+29,y+12,'b',35,(250,246,234))
-    c.text('IPO',x+115,y+25,'b',13,(239,194,113))
+def illustration(c,which,x,y,w,h):
+    if which == 'summit':
+        c.gradient(x,y,x+w,y+h,(34,53,67),(75,94,95))
+        for i,hg in enumerate((30,45,38,67,41,50,62,44,36)):
+            xx=x+3+i*(w//9)
+            c.rect(xx,y+h-hg,xx+w//11+3,y+h,(28,49,58))
+            for wx in range(xx+5,xx+w//11,9):
+                for wy in range(y+h-hg+10,y+h-3,13):c.rect(wx,wy,wx+3,wy+4,(118,145,139))
+        for i,bg in enumerate(((237,232,215),(167,58,58),(230,233,236))):
+            cx=x+54+i*105
+            c.rect(cx-18,y+8,cx+18,y+22,bg)
+            disc(c,cx,y+44,10,(218,178,145))
+            polygon(c,[(cx-23,y+81),(cx-18,y+61),(cx-7,y+57),(cx,y+63),(cx+8,y+56),(cx+18,y+63),(cx+23,y+81)],(28,39,46))
+            c.rect(cx-23,y+78,cx+23,y+93,(27,39,45))
+        c.rect(x,y+h-2,x+w,y+h,(178,124,65))
+    elif which=='bridge':
+        c.gradient(x,y,x+w,y+h,(39,62,81),(192,116,81))
+        disc(c,x+w-62,y+26,19,(235,183,131))
+        c.rect(x,y+h-25,x+w,y+h,(38,88,102))
+        for xx in (x+65,x+w-64):
+            c.rect(xx-6,y+36,xx+6,y+h-23,(226,211,182))
+            c.line(xx,y+40,xx-43,y+h-34,(232,208,171),2)
+            c.line(xx,y+40,xx+43,y+h-34,(232,208,171),2)
+        c.rect(x+9,y+h-45,x+w-10,y+h-39,(224,214,184))
+        for xx in range(x+19,x+w-15,29):c.rect(xx,y+h-39,xx+6,y+h-24,(221,210,186))
+        c.line(x,y+h-22,x+w,y+h-22,(237,194,139),2)
+    else:
+        c.gradient(x,y,x+w,y+h,(9,62,62),(30,103,88))
+        for i in range(5):
+            yy=y+16+i*17
+            c.line(x+10,yy,x+w-9,yy,(41,102,98),1)
+        highs=(24,34,29,46,41,55,57,68,79,89)
+        for i,hg in enumerate(highs):
+            xx=x+13+i*(w-30)//len(highs)
+            c.rect(xx,y+h-8-hg,xx+14,y+h-8,(70,150,134))
+        coords=[(x+7,y+h-42),(x+35,y+h-50),(x+64,y+h-48),(x+93,y+h-65),(x+120,y+h-60),(x+151,y+h-73),(x+182,y+h-58),(x+211,y+h-82),(x+252,y+18),(x+w-10,y+9)]
+        for a,b in zip(coords,coords[1:]):c.line(*a,*b,(238,196,116),3)
+        c.rect(x+13,y+11,x+107,y+54,(12,71,67))
+        c.text('$83',x+22,y+10,'b',35,(249,244,225))
+        c.text('IPO',x+114,y+24,'b',14,(238,193,114))
 
-def image_climate(c,x,y,w,h):
-    c.gradient(x,y,x+w,y+h,(121,151,139),(234,183,126))
-    filled_disc(c,x+w-69,y+39,28,(250,219,164))
-    poly(c,[(x,y+h-20),(x+55,y+67),(x+105,y+h-22),(x+157,y+62),(x+218,y+h-22),(x+w,y+73),(x+w,y+h)],(63,109,104))
-    poly(c,[(x,y+h-5),(x+92,y+88),(x+173,y+h-1),(x+w-54,y+80),(x+w,y+101),(x+w,y+h)],(30,78,83))
-    for xx,yy in ((x+90,y+64),(x+246,y+57)):
-        c.line(xx,yy,xx,y+h-15,(243,246,224),3)
-        filled_disc(c,xx,yy,4,(253,247,232))
-        for dx,dy in ((0,-23),(-19,12),(19,12)):
-            c.line(xx,yy,xx+dx,yy+dy,(251,246,225),3)
-    c.text('COP31',x+15,y+16,'b',22,(251,249,238))
-    c.text('ANTALYA',x+18,y+41,'b',10,(241,246,229))
 
-def lead_card(c,x,y,w,item):
-    label,heading,deck,source,kind,topic=item
-    h=274
-    c.roundrect(x,y,x+w,y+h,7,WHITE)
-    if kind=='summit':image_summit(c,x+4,y+4,w-8,116)
-    elif kind=='market':image_market(c,x+4,y+4,w-8,116)
-    else:image_climate(c,x+4,y+4,w-8,116)
-    c.rect(x+12,y+131,x+17,y+142,COLOR_BY_TOPIC[topic])
-    fit_exact(c,label,x+24,y+127,w-38,17,'b',[11,10],MUTED2,1)
-    fit_exact(c,heading,x+12,y+151,w-24,58,'b',[22,20,18],INK2,3,1.08)
-    fit_exact(c,deck,x+12,y+213,w-24,38,'r',[12,11],MUTED2,3,1.12)
-    c.rect(x+12,y+h-22,x+w-12,y+h-21,RULE)
-    fit_exact(c,source,x+12,y+h-19,w-24,15,'b',[9],COLOR_BY_TOPIC[topic],1)
+def lead_panel(c,x,y,w,item):
+    loc,title,dek,src,kind=item
+    c.rect(x,y,x+w,y+226,SHEET)
+    illustration(c,kind,x+4,y+4,w-8,101)
+    c.rect(x+9,y+112,x+12,y+121,RED3)
+    typeset(c,loc,x+18,y+108,w-27,18,'b',[11,10],FADE,1)
+    # Emphasized larger headlines without overlapping the deck.
+    typeset(c,title,x+9,y+131,w-18,51,'b',[22,20,18,17],INK3,3,1.07)
+    typeset(c,dek,x+9,y+184,w-18,29,'r',[11,10],FADE,3)
+    c.rect(x+9,y+216,x+w-9,y+217,RULE3)
+    typeset(c,src,x+10,y+216,w-20,10,'b',[9],RED3,1)
 
-def icon_art(c,name,x,y,w,h):
-    # A compact schematic icon, not a loaded asset.
-    sx=x+w//2; sy=y+h//2
-    if name=='bridge':
-        c.line(x+10,y+h-9,x+w-9,y+h-9,(242,247,235),3)
-        for ix in (x+34,x+w-32):
-            c.line(ix,y+7,ix,y+h-9,(242,247,235),3)
-        c.line(x+20,y+14,x+w-20,y+14,(245,218,175),2)
-    elif name=='rain':
-        for dx in (-14,0,14): filled_disc(c,sx+dx,sy-5,11,(238,247,242))
-        for dx in (-20,-3,15): c.line(sx+dx,sy+12,sx+dx-5,sy+23,(115,194,218),2)
-    elif name=='trade':
-        for dx in (-18,12): c.rect(sx+dx-8,sy-14,sx+dx+10,sy+11,(241,225,194))
-        c.line(sx-7,sy+16,sx+24,sy+16,(255,247,231),2)
-    elif name=='court':
-        poly(c,[(sx-24,sy-7),(sx,sy-22),(sx+24,sy-7)],(245,237,207))
-        for dx in (-15,0,15):c.rect(sx+dx-3,sy-5,sx+dx+3,sy+15,(236,233,215))
-        c.rect(sx-28,sy+15,sx+28,sy+19,(245,237,207))
-    elif name in ('bars','globe'):
-        for i,q in enumerate((10,22,16,31,25)):c.rect(sx-37+i*16,sy+17-q,sx-27+i*16,sy+17,(236,215,169))
-    elif name=='ship':
-        poly(c,[(sx-34,sy+5),(sx+35,sy+5),(sx+20,sy+21),(sx-24,sy+21)],(236,222,197))
-        c.rect(sx-14,sy-15,sx+19,sy+5,(235,219,187))
-    elif name=='atom':
-        c.circle(sx,sy,15,(231,232,206),2)
-        c.line(sx-25,sy,sx+25,sy,(231,232,206),2)
-        c.line(sx,sy-23,sx,sy+23,(231,232,206),2)
-        filled_disc(c,sx,sy,4,(243,196,117))
-    elif name=='shield':
-        poly(c,[(sx,sy-22),(sx+22,sy-11),(sx+16,sy+14),(sx,sy+23),(sx-16,sy+14),(sx-22,sy-11)],(232,222,190))
-        c.line(sx-9,sy,sx-1,sy+9,(151,102,76),3)
-        c.line(sx-1,sy+9,sx+14,sy-9,(151,102,76),3)
 
-def mini_card(c,x,y,w,item):
-    label,heading,topic,icon=item
-    c.roundrect(x,y,x+w,y+121,5,WHITE)
-    tint={'POLITICS':(109,74,73),'SECURITY':(94,92,95),'CLIMATE':(92,119,101),'ECONOMY':(59,108,106)}[topic]
-    c.rect(x+4,y+4,x+w-4,y+44,tint)
-    icon_art(c,icon,x+4,y+4,w-8,39)
-    c.rect(x+9,y+50,x+12,y+57,COLOR_BY_TOPIC[topic])
-    fit_exact(c,label,x+17,y+48,w-22,15,'b',[9],MUTED2,1)
-    fit_exact(c,heading,x+9,y+65,w-18,46,'b',[13,12,11,10],INK2,3,1.1)
+def icon_scene(c,topic,ix,x,y,w,h):
+    """Ten hand-drawn thematic miniatures. Pure stdlib geometric primitives."""
+    palettes=[((48,88,71),(111,151,93)),((90,55,51),(174,104,67)),
+              ((52,71,92),(110,134,146)),((37,76,84),(83,145,136)),
+              ((63,62,88),(129,113,119)),((42,79,109),(78,126,157)),
+              ((45,82,96),(105,150,167)),((97,63,60),(180,117,79)),
+              ((48,83,104),(105,151,179)),((114,77,55),(204,145,87))]
+    top,bot=palettes[ix]
+    c.gradient(x,y,x+w,y+h,top,bot)
+    for gx in range(x+2,x+w,18):
+        c.line(gx,y+4,gx,y+h-4,tuple((a*3+b)//4 for a,b in zip(top,bot)))
+    cx=x+w-38; cy=y+h//2
+    cream=(246,233,199); pale=(221,240,223); coral=(246,184,128)
+    if ix==0: # climate summit: leaf + earth + wind turbine
+        disc(c,cx,cy,15,cream);disc(c,cx,cy,11,(87,144,122))
+        polygon(c,[(cx-10,cy-3),(cx-3,cy-9),(cx+5,cy-5),(cx+1,cy+2),(cx+9,cy+9),(cx-3,cy+10)],pale)
+        c.line(cx+22,cy-5,cx+22,cy+18,pale,2)
+        for dx,dy in ((-8,-3),(8,-7),(0,11)):c.line(cx+22,cy-5,cx+22+dx,cy-5+dy,pale,2)
+    elif ix==1: # oil infrastructure in twilight
+        c.rect(cx-20,cy+12,cx+34,cy+16,(32,45,51))
+        for xx in (cx-12,cx+8,cx+25):
+            c.line(xx,cy+12,xx+5,cy-14,cream,2)
+            c.line(xx+5,cy-14,xx+12,cy+12,cream,2)
+            c.line(xx+2,cy-5,xx+10,cy-5,cream)
+        disc(c,cx+29,cy-11,5,coral)
+    elif ix==2: # damaged urban skyline and peace dove
+        for j,height in enumerate((13,25,18,30,16,24,13)):
+            bx=cx-27+j*10
+            c.rect(bx,cy+20-height,bx+8,cy+20,(38,55,63))
+            c.rect(bx+2,cy+24-height,bx+4,cy+27-height,coral)
+        polygon(c,[(cx-13,cy-12),(cx-2,cy-17),(cx+5,cy-9),(cx+20,cy-10),(cx+9,cy-2),(cx+6,cy+7),(cx,cy+1)],cream)
+    elif ix==3: # trade vessel, flag and containers
+        c.rect(cx-32,cy+7,cx+31,cy+18,(38,75,79))
+        polygon(c,[(cx-35,cy+8),(cx+34,cy+8),(cx+23,cy+20),(cx-27,cy+20)],cream)
+        for j,col in enumerate((coral,(233,205,149),pale,coral)):
+            c.rect(cx-25+j*14,cy-6,cx-13+j*14,cy+7,col)
+        c.line(cx-2,cy-18,cx-2,cy-7,cream,2)
+        c.line(cx-2,cy-17,cx+18,cy-17,cream,1)
+        c.line(cx-2,cy-17,cx+13,cy-8,cream,1)
+    elif ix==4: # courthouse pillars / scales
+        c.rect(cx-29,cy-17,cx+30,cy-13,cream)
+        polygon(c,[(cx-32,cy-16),(cx,cy-29),(cx+33,cy-16)],coral)
+        for j in (-22,-8,8,22):
+            c.rect(cx+j-3,cy-10,cx+j+3,cy+15,pale)
+        c.rect(cx-33,cy+15,cx+33,cy+19,cream)
+        c.line(cx,cy-12,cx,cy+12,coral,2)
+    elif ix==5: # EU finance and Ukraine rise
+        for j in range(4):
+            xx=cx-29+j*16
+            c.rect(xx,cy+18-(j+2)*7,xx+10,cy+18,(232,203,138))
+        c.line(cx-34,cy+5,cx+27,cy-20,cream,3)
+        c.line(cx+27,cy-20,cx+15,cy-17,cream,2)
+        c.line(cx+27,cy-20,cx+22,cy-7,cream,2)
+    elif ix==6: # cyclone over sea
+        for r in (19,13,7):
+            c.circle(cx,cy-4,r,cream if r%2 else pale,2,20,290)
+        disc(c,cx,cy-4,3,coral)
+        for yy in (cy+15,cy+20):
+            for xx in (cx-35,cx-12,cx+12): c.line(xx,yy,xx+14,yy-2,(222,229,222),1)
+    elif ix==7: # radar / defense risk
+        c.circle(cx,cy,22,pale,2)
+        c.circle(cx,cy,13,(238,196,159),1)
+        c.line(cx-28,cy,cx+28,cy,cream)
+        c.line(cx,cy-26,cx,cy+26,cream)
+        c.line(cx,cy,cx+15,cy-16,coral,3)
+        disc(c,cx+15,cy-16,4,coral)
+    elif ix==8: # atmospheric river
+        for xx,yy,r in ((cx-13,cy-7,12),(cx+1,cy-12,17),(cx+19,cy-6,12)):
+            disc(c,xx,yy,r,(233,237,232))
+        c.rect(cx-25,cy-7,cx+30,cy+4,(233,237,232))
+        for j in range(7):
+            xx=cx-23+j*8
+            c.line(xx,cy+9,xx-5,cy+23,(165,211,226),2)
+    else: # Pacific drought: sun / palm / cracked plain
+        disc(c,cx+19,cy-12,12,(255,204,112))
+        c.line(cx-13,cy+17,cx-9,cy-16,(49,72,52),4)
+        for dx,dy in ((-28,-17),(-22,-27),(-6,-29),(10,-21),(13,-12)):
+            c.line(cx-9,cy-16,cx+dx,cy+dy,(163,207,137),3)
+        for xx in (cx-28,cx-8,cx+13):
+            c.line(xx,cy+18,xx+10,cy+23,cream,1)
+            c.line(xx+10,cy+23,xx+15,cy+19,cream,1)
+    # vignette border within own card
+    c.rect(x,y+h-2,x+w,y+h,(243,225,190))
 
-def map_panel_v2(c,x,y,w,h):
-    c.roundrect(x,y,x+w,y+h,8,MIDNIGHT)
-    c.text('WORLD / WATCHPOINTS',x+12,y+10,'b',11,(221,239,230))
-    for j in range(1,6):c.line(x+10,y+24+j*27,x+w-10,y+24+j*27,(35,70,78))
-    for j in range(1,6):c.line(x+10+j*39,y+30,x+10+j*39,y+161,(35,70,78))
-    # Schematic continental polygons: hand drawn, no external map dependency.
-    land=(
-      [(10,42),(38,29),(80,40),(99,63),(85,81),(65,73),(47,92),(26,74)],
-      [(69,93),(91,97),(105,125),(92,154),(74,135),(65,110)],
-      [(132,47),(146,34),(159,40),(157,62),(143,68)],
-      [(145,70),(169,72),(184,97),(169,143),(149,133)],
-      [(158,34),(195,26),(236,34),(251,58),(233,75),(203,68),(176,85),(159,67)],
-      [(222,128),(244,127),(257,142),(243,153),(226,146)],
-    )
-    sx=(w-18)/268; sy=(h-78)/164
-    for p in land:poly(c,[(x+8+int(px*sx),y+30+int(py*sy)) for px,py in p],(112,158,153))
-    for mx,my in ((45,71),(150,51),(181,80),(208,61),(158,97),(235,143)):
-        filled_disc(c,x+8+int(mx*sx),y+30+int(my*sy),3,(251,182,113))
-    c.line(x+12,y+h-49,x+w-12,y+h-49,(66,105,104))
-    c.text('FEATURED MIX / 13',x+12,y+h-42,'b',10,(226,236,223))
-    totals={k:sum(1 for s in LEADS if s[-1]==k)+sum(1 for s in SPOTLIGHT if s[2]==k) for k in COLOR_BY_TOPIC}
-    max_val=max(totals.values())
-    for i,(name,n) in enumerate(totals.items()):
-        xx=x+12+i*60
-        c.rect(xx,y+h-23,xx+51,y+h-19,(61,93,96))
-        c.rect(xx,y+h-23,xx+int(n/max_val*51),y+h-19,COLOR_BY_TOPIC[name])
-        c.text(name[:3]+' '+str(n),xx,y+h-17,'b',9,(231,233,222))
 
-def wire_section(c,x,y,w,label,tint,items):
-    c.rect(x,y,x+w,y+18,(236,234,226))
-    c.rect(x,y,x+4,y+18,tint)
-    fit_exact(c,label,x+10,y+3,w-15,14,'b',[11,10],INK2,1)
-    for i,item in enumerate(items):
-        yy=y+21+i*28
-        c.rect(x,yy+27,x+w,yy+28,RULE)
-        fit_exact(c,f'{i+1:02d}  {item}',x+2,yy+2,w-4,26,'b',[10,9],INK2,3,1.10)
+def pick_panel(c,x,y,w,num,item):
+    loc,headline,topic=item
+    palette={'CLIMATE':(92,119,89),'WAR':(146,81,64),'TRADE':(55,107,107),'POLITICS':(117,80,81),'HEALTH':(78,108,105),'TECH':(65,88,118),'SCIENCE':(114,88,118)}
+    accent=palette[topic]
+    c.rect(x,y,x+w,y+105,SHEET)
+    # 10 unique visual icons, with legible identity and hard-bounded title below.
+    icon_scene(c,topic,num-4,x+3,y+3,w-6,40)
+    c.rect(x+6,y+8,x+41,y+40,(27,40,42))
+    c.text(f'{num:02d}',x+10,y+11,'b',22,(255,247,229))
+    place,_,subject=loc.partition(' / ')
+    # Labels over illustration with enough contrast for tiny thumbnails.
+    c.rect(x+45,y+8,x+124,y+36,(28,48,55))
+    c.text(place[:15],x+49,y+9,'b',9,(254,248,237),clip=(x+49,y+8,x+122,y+22))
+    c.text(subject[:12],x+49,y+23,'b',9,(238,191,128),clip=(x+49,y+21,x+122,y+38))
+    # Leave 53px for 3-4-line bold news headline; no overlap with illustration.
+    c.rect(x+6,y+46,x+9,y+91,accent)
+    typeset(c,headline,x+16,y+49,w-23,47,'b',[15,14,13,12,11,10],INK3,4,1.04)
+    c.rect(x+8,y+100,x+w-8,y+101,RULE3)
+
+def map_and_chart(c,x,y,w,h):
+    c.rect(x,y,x+w,y+h,(38,57,64))
+    c.text('WHERE IT HAPPENED',x+12,y+11,'b',12,(242,244,233))
+    c.text('DATELINES / 19 NOV',x+12,y+30,'b',10,(204,225,218))
+    for i in range(1,5):
+        c.line(x+7,y+43+i*34,x+w-8,y+43+i*34,(57,80,85),1)
+    for i in range(1,5):
+        c.line(x+6+i*40,y+44,x+6+i*40,y+202,(57,80,85),1)
+    shapes=[
+        [(10,39),(36,22),(71,32),(87,56),(75,70),(59,64),(41,81),(20,62)],
+        [(59,83),(79,89),(91,116),(82,151),(67,134),(57,103)],
+        [(111,37),(126,26),(138,34),(138,54),(124,60)],
+        [(124,67),(146,69),(163,95),(151,136),(132,125)],
+        [(137,27),(173,21),(202,34),(213,55),(194,71),(167,65),(149,78),(135,54)],
+        [(181,130),(203,125),(215,142),(203,153),(185,143)],
+    ]
+    ox=x+6; oy=y+47
+    xs=(w-14)/220; ys=158/165
+    for shp in shapes:
+        polygon(c,[(ox+int(a*xs),oy+int(b*ys)) for a,b in shp],(135,164,148))
+    for mx,my in ((29,65),(51,113),(133,48),(161,94),(187,44),(147,120),(203,140)):
+        disc(c,ox+int(mx*xs),oy+int(my*ys),3.0,(242,171,104))
+    c.rect(x+12,y+h-65,x+w-12,y+h-64,(92,112,111))
+    c.text('THIS EDITION: 40 STORIES',x+12,y+h-58,'b',10,(240,236,221))
+    # Counts are of stories *within this poster*, not world metrics.
+    vals=[len(items) for _,_,items in DESKS]+[N_FEATURED]
+    cols=(TEAL3,(165,95,62),BLUE3,(131,88,97),(118,93,59),(222,174,113))
+    barw=w-24; start=x+12
+    for n,col in zip(vals,cols):
+        width=int(barw*n/N_STORIES)
+        c.rect(start,y+h-35,start+width,y+h-22,col)
+        start+=width
+    c.text('27 REGIONAL + 13 FEATURED',x+12,y+h-18,'b',9,(223,228,216))
+
+
+def desk_symbol(c,x,y,which,color):
+    ink=(255,255,250)
+    c.roundrect(x,y,x+18,y+18,3,color)
+    if which==0: # sunrise/Asia
+        disc(c,x+9,y+10,4,ink)
+        c.line(x+2,y+14,x+16,y+14,ink)
+    elif which==1: # oil tower/Middle East
+        c.line(x+9,y+3,x+4,y+15,ink,2);c.line(x+9,y+3,x+14,y+15,ink,2)
+        c.line(x+5,y+10,x+13,y+10,ink)
+    elif which==2: # parliament/Europe
+        polygon(c,[(x+3,y+6),(x+9,y+2),(x+15,y+6)],ink)
+        for q in (5,9,13):c.rect(x+q-1,y+7,x+q+1,y+14,ink)
+        c.line(x+2,y+15,x+16,y+15,ink)
+    elif which==3: # Africa landscape
+        disc(c,x+12,y+5,3,ink)
+        polygon(c,[(x+1,y+15),(x+6,y+8),(x+10,y+14),(x+14,y+11),(x+18,y+15)],ink)
+    else: # Americas skyscrapers
+        for q,hh in ((3,8),(7,13),(12,10)):
+            c.rect(x+q,y+16-hh,x+q+3,y+16,ink)
+
+
+def desk_column(c,x,y,w,name,accent,headlines,index):
+    c.rect(x,y,x+w,y+23,(232,229,220))
+    c.rect(x,y,x+4,y+23,accent)
+    which=next(i for i,desk in enumerate(DESKS) if desk[0]==name)
+    desk_symbol(c,x+7,y+3,which,accent)
+    typeset(c,name,x+30,y+5,w-33,14,'b',[12,11,10],INK3,1)
+    n=len(headlines)
+    row_height=40 if n==6 else 48
+    for i,headline in enumerate(headlines):
+        yy=y+25+i*row_height
+        c.text(f'{index+i+1:02d}',x+1,yy+2,'b',10,RED3)
+        typeset(c,headline,x+22,yy+2,w-24,row_height-5,'r',[13,12,11,10],INK3,3,1.05)
+        c.rect(x,yy+row_height-1,x+w,yy+row_height,RULE3)
 
 def render():
-    c=Canvas(color=CREAM)
-    c.rect(23,14,31,23,RED)
-    c.text('THE WORLD AT A GLANCE',38,13,'b',11,RED)
-    c.text('NO. 326  /  THURSDAY EDITION',764,13,'b',11,MUTED2)
-    c.line(24,33,999,33,INK2,1)
-    c.text('THURSDAY 19 NOVEMBER 2026',22,36,'b',48,INK2)
-    c.text('Historic diplomacy in Shenzhen  /  A record AI listing  /  Climate talks in Antalya',25,94,'r',13,MUTED2)
-    c.line(24,115,1000,115,INK2,3)
-    # Audit-safe: all numerical totals below are derived from the included stories,
-    # not made-up statistics about international markets or events.
-    metrics=[('41','WORLD STORIES'),('05','REGIONAL DESKS'),('03','ILLUSTRATED LEADS'),('10','EDITOR PICKS'),('28','WIRE BRIEFS'),('01','GLOBAL EDITION')]
-    for i,(number,label) in enumerate(metrics):
-        xx=25+i*164
-        if i:c.line(xx-11,125,xx-11,151,RULE)
-        c.text(number,xx,121,'b',20,RED if i in (0,2) else INK2)
-        c.text(label,xx+35,129,'b',9,MUTED2)
-    c.line(24,156,1000,156,RULE)
-    # Leads with three wholly original, programmatically drawn illustrations.
-    for i,item in enumerate(LEADS):lead_card(c,24+i*329,164,317,item)
-    c.text('EDITOR\'S CHOICE',24,444,'b',14,INK2)
-    c.text('10 STORIES / 5 CONTINENTS',788,445,'b',10,RED)
-    c.line(24,461,1000,461,RULE)
-    for i,item in enumerate(SPOTLIGHT):
+    c=Canvas(color=PAPER)
+    # Newspaper masthead / date, tuned for thumbnail recognition.
+    c.rect(24,14,33,24,RED3)
+    c.text('THE WORLD IN ONE DAY',41,13,'b',12,RED3)
+    c.text('ISSUE 326   |   40 STORIES   |   GLOBAL DESK',703,14,'b',10,FADE)
+    c.rect(24,34,1000,36,INK3)
+    c.text('Thursday',24,37,'b',48,INK3)
+    c.text('19 November 2026',267,43,'b',39,INK3)
+    c.text('World leaders meet  /  War and diplomacy  /  Markets and the climate',28,93,'r',13,FADE)
+    c.rect(24,115,1000,119,INK3)
+    sections=[('ASIA-PACIFIC',6),('MIDDLE EAST',5),('EUROPE',5),('AFRICA',5),('AMERICAS',6),('WORLD / MIX',13)]
+    for i,(name,count) in enumerate(sections):
+        xx=26+i*163
+        if i:c.rect(xx-9,125,xx-8,153,RULE3)
+        c.text(f'{count:02d}',xx,125,'b',22,RED3 if i in (0,5) else INK3)
+        c.text(name,xx+31,132,'b',10,FADE)
+    c.rect(24,158,1000,159,RULE3)
+    c.text('THE LEAD STORIES',24,165,'b',13,INK3)
+    c.text('THURSDAY WORLD REPORT / 3 MAJOR DEVELOPMENTS',686,166,'b',10,RED3)
+    c.rect(24,185,1000,186,RULE3)
+    for i,item in enumerate(LEADS):lead_panel(c,24+i*329,192,318,item)
+    c.rect(24,427,1000,429,INK3)
+    c.text("EDITOR'S SELECTION",24,433,'b',14,INK3)
+    c.text('10 MORE STORIES / CLIMATE + WAR + TRADE + JUSTICE',657,438,'b',9,RED3)
+    c.rect(24,456,1000,457,RULE3)
+    for i,item in enumerate(PICKS):
         row,col=divmod(i,5)
-        mini_card(c,24+col*197,470+row*129,188,item)
-    c.line(24,726,1000,726,INK2,2)
-    c.text('THE WORLD WIRE',24,733,'b',17,INK2)
-    c.text('28 MORE BRIEFS / GEOGRAPHIC DESKS',691,737,'b',10,MUTED2)
-    c.line(24,757,1000,757,RULE)
-    map_panel_v2(c,24,766,260,228)
-    for i,(name,tint,items) in enumerate(WIRE):
-        wire_section(c,294+i*176,767,169,name,tint,items)
-    c.line(24,998,1000,998,INK2,1)
-    c.text('FIXED EDITORIAL SNAPSHOT  /  SOURCES IN README',24,1002,'b',9,MUTED2)
-    c.text('ILLUSTRATIONS AND MAP DRAWN IN CODE  /  1024 X 1024',673,1002,'b',9,MUTED2)
+        pick_panel(c,24+col*197,464+row*110,188,i+4,item)
+    c.rect(24,686,1000,688,INK3)
+    c.text('THE WORLD WIRE',24,692,'b',16,INK3)
+    c.text('27 REPORTS / FIVE REGIONAL DESKS / 19 NOVEMBER 2026',593,698,'b',9,RED3)
+    c.rect(24,715,1000,716,RULE3)
+    map_and_chart(c,24,722,216,266)
+    idx=13
+    for col,(name,tint,items) in enumerate(DESKS):
+        desk_column(c,248+col*151,722,146,name,tint,items,idx)
+        idx+=len(items)
+    assert idx == 40
+    c.rect(24,998,1000,999,INK3)
+    c.text('WORLD NEWS / 19 NOV 2026 / EDITORIAL SOURCES IN README',24,1001,'b',9,FADE)
+    c.text('HAND-DRAWN VECTOR ART / 1024 X 1024',763,1001,'b',9,FADE)
     return c
 
+
 def main():
-    out=Path(os.environ.get('OUTPUT_PATH','/output/entry.png'))
-    render().save_png(out)
-    n=out.stat().st_size
-    if n>1_048_576: raise RuntimeError(f'PNG too large: {n:,} bytes')
-    print(f'Generated {out}: {n} bytes, 41 stories, 1024x1024, stdlib only')
+    output=Path(os.environ.get('OUTPUT_PATH','/output/entry.png'))
+    render().save_png(output)
+    size=output.stat().st_size
+    if size >= 1_048_576:
+        raise RuntimeError('Output exceeds 1 MiB limit: '+str(size))
+    print(f'Generated {output}: {size} bytes / {N_STORIES} stories / 1024x1024 / stdlib only')
 
 if __name__=='__main__':
     main()
