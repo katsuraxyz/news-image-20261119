@@ -34,7 +34,16 @@ STORIES = [
     ("Israeli ground op\npushes past Gaza\n'yellow line'", "MIDEAST  Gaza City", "GAZA"),
     ("Iran widens Gulf\nattacks: US base in\nKuwait hit", "SECURITY  Gulf", "GULF"),
     ("US loses measles\nelimination status\namid resurgence", "HEALTH  Atlanta", "MEASLES"),
-    ("Van Gogh sells for\nrecord $190.4m after\nNazi-era dispute", "ART  New York", "ART"),
+]
+
+# one-line gist under each headline: what a viewer takes away
+GISTS = [
+    "Leaders of the three powers meet on the APEC sidelines",
+    "The AI lab's debut values it above every tech IPO before it",
+    "A rare push past the line Israel had held since the truce",
+    "Kuwait and Bahrain sites struck; US air base targeted",
+    "The country reports enough cases to lose WHO elimination",
+    "The Nazi-era sale row ends in a $190.4m auction record",
 ]
 
 def draw_glyph(d, glyph, x, y, s, col):
@@ -104,6 +113,8 @@ def main():
         for line in headline.split("\n"):
             d.text((x + 16, yy), line, font=font(SERIF_B, 27), fill=INK)
             yy += 40
+        # short gist strip under the headline
+        d.text((x + 16, yy + 8), GISTS[i], font=font(SANS, 15), fill=(70, 70, 76))
         # story index numeral
         d.text((x + card_w - 44, y + card_h - 42), f"{i+1}", font=font(SERIF_B, 28), fill=col)
     # footer
