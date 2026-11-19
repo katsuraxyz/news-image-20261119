@@ -2841,91 +2841,94 @@ def draw_fit(canvas, message, x, y, width, height, family, sizes, color,
     return lines,size
 
 
-# ----- 40-story newspaper edition; all rendering offline -----
-PAPER=(249,247,241)
+
+# WORLD NEWS / 19 NOV 2026 / 25 CURATED AND SOURCED STORIES
+# All glyphs are embedded as alpha bitmaps. All art is drawn with primitives.
+PAPER=(248,246,239)
 SHEET=(255,254,250)
 INK3=(28,33,31)
 DARK=(35,46,48)
-FADE=(90,94,91)
-RULE3=(198,196,188)
-RED3=(161,54,48)
-TEAL3=(32,96,92)
-OCHRE=(172,124,55)
-BLUE3=(57,81,108)
+FADE=(86,91,89)
+RULE3=(191,191,180)
+RED3=(159,55,47)
+TEAL3=(29,96,94)
+OCHRE=(165,116,50)
+BLUE3=(56,82,111)
 
 LEADS = [
-    ('SHENZHEN / DIPLOMACY',
-     'Trump, Xi, Putin hold first three-way summit',
-     'The leaders agree to explore UN reforms and nuclear-risk talks. Ukraine and Iran remain unresolved.',
-     'AP / 19 NOV', 'summit'),
-    ('CRIMEA / UKRAINE',
-     'Third strike disrupts Crimean Bridge',
-     'Russian officials report interrupted crossings after another attack on the route linking Russia and Crimea.',
-     'REUTERS / 19 NOV', 'bridge'),
-    ('NEW YORK / TECHNOLOGY',
-     'Anthropic prices record IPO at $83',
-     'The Claude developer enters public markets amid rising AI investment and questions over future costs.',
-     'AP / 19 NOV', 'market'),
+ ('SHENZHEN  /  GEOPOLITICS',
+  'Trump, Xi, Putin meet at historic summit',
+  'Three leaders gather at APEC, with nuclear arms and international security on the agenda.',
+  'YONHAP / 19 NOV', 'summit'),
+ ('NEW YORK  /  MARKETS',
+  'Anthropic sets record with $81bn IPO',
+  'The AI developer prices shares at $83, the largest initial public offering ever.',
+  'REUTERS / 19 NOV', 'market'),
+ ('THE HAGUE  /  WORLD COURT',
+  'ICJ rules Myanmar committed genocide',
+  'UN judges hold Myanmar responsible for the campaign against Rohingya civilians.',
+  'AP + REUTERS / 19 NOV', 'court'),
 ]
+# 8 secondary stories. (label, headline, illustration index, source ID)
+PICKS=[
+ ('COP31 / ANTALYA', 'New climate draft puts finance talks in focus', 0, 'UNFCCC'),
+ ('GULF / IRAN', 'Iran says it hit US sites in Kuwait', 1, 'REUTERS'),
+ ('CRIMEA / WAR', 'Third attack halts Crimean Bridge traffic', 2, 'REUTERS'),
+ ('EU / INDONESIA', 'Trade accord moves toward signature', 3, 'EU COUNCIL'),
+ ('VATICAN / FAITH', 'Pope marks 400 years of St Peters basilica', 4, 'AP'),
+ ('CARACAS / TIES', 'US and Venezuela restore military links', 5, 'AP'),
+ ('COOK ISLANDS', 'Cyclone Xavier reaches category four', 6, 'FIJI MET'),
+ ('BERLIN / KYIV', 'Ukraine allies gather for security talks', 7, 'REUTERS'),
+]
+# Seven distinct desks with two concise reports each (7 x 2 = 14).
+DESKS=[
+ ('EAST ASIA', (37,94,90), [
+    'Japan PM says Taiwan policy unchanged',
+    'Trump-Kim meeting remains uncertain']),
+ ('MIDDLE EAST',(149,89,66),[
+    'Israel halts E1 settlement contracts',
+    'Iraq jails six French IS members']),
+ ('EUROPE',(63,85,120),[
+    'EU and UK ready Brussels reset summit',
+    'EU agrees changes to methane rules']),
+ ('AFRICA',(125,88,98),[
+    'Ethiopia-Eritrea troops raise alarm',
+    'Migrant boat capsizes off Senegal']),
+ ('N. AMERICA',(135,102,67),[
+    'US appeals Venezuelan migrant protections',
+    'Democrats question Nvidia links']),
+ ('LATIN AMERICA',(91,108,76),[
+    'Argentina PASO reform clears panel',
+    'Brazil Awa contact raises concern']),
+ ('OCEANIA',(46,102,123),[
+    'Australia jobless rate hits 4.9%',
+    'Fiji forecast points to more dry weather']),
+]
+N_STORIES = len(LEADS)+len(PICKS)+sum(len(s) for _,_,s in DESKS)
+assert (len(LEADS),len(PICKS),len(DESKS),N_STORIES)==(3,8,7,25)
 
-# 10 hand-selected stories (two rows, five columns).
-PICKS = [
-    ('ANTALYA / COP31', 'Climate summit races to settle finance deal', 'CLIMATE'),
-    ('IRAN / GULF', 'Iran attacks Gulf sites after US Qeshm strike', 'WAR'),
-    ('GAZA / CONFLICT', 'Israeli troops push beyond ceasefire line', 'WAR'),
-    ('BRUSSELS / TRADE', 'EU governments approve Indonesia trade pact', 'TRADE'),
-    ('THE HAGUE / JUSTICE', 'World court weighs Rohingya genocide case', 'POLITICS'),
-    ('EUROPE / UKRAINE', 'EU proposes EUR45bn loan to support Kyiv', 'TRADE'),
-    ('INDIA / STORM', 'Cyclone Aqwan heads toward India east coast', 'CLIMATE'),
-    ('RIYADH / YEMEN', 'Houthi missile threat alarms Saudi Arabia', 'WAR'),
-    ('CALIFORNIA / WEATHER', 'Record atmospheric river rain hits US', 'CLIMATE'),
-    ('PACIFIC / DROUGHT', 'Fiji and Tonga face El Nino emergencies', 'CLIMATE'),
-]
-
-# Five regional desks, 27 briefs. Each item is its own story, not a duplicate.
-DESKS = [
-    ('ASIA / PACIFIC', TEAL3, [
-        'Indonesia passes asset seizure legislation',
-        'IAEA flags North Korea uranium expansion',
-        'Japan insists Taiwan stance has not changed',
-        'South Korea exam tightens anti-AI checks',
-        'Bangladesh wage protests fuel unrest',
-        'Australia unemployment rate rises to 4.9%',
-    ]),
-    ('MIDDLE EAST', (165,95,62), [
-        'Israel delays West Bank E1 settlement',
-        'Trump alleges Iran is studying bio-weapons',
-        'Turkey court sentences CHP figures',
-        'Oil traders weigh Strait of Hormuz risks',
-        'Iran bus crash fuels regional protests',
-    ]),
-    ('EUROPE', BLUE3, [
-        'Zelensky allies gather for Berlin peace talks',
-        'Hungary opens bribery network inquiry',
-        'Spanish election candidates turn to YouTube',
-        'Five EU nations examine Rwanda asylum plan',
-        'Chelsea defeat PSG in Womens Champions League',
-    ]),
-    ('AFRICA', (131,88,97), [
-        'Sudan drone attacks drive more displacement',
-        'Senegal ruling party expels President Faye',
-        'DR Congo prepares Ebola vaccine trials',
-        'Egypt IMF funding deal unlocks $2.3bn',
-        'Ethiopia and Eritrea mass border troops',
-    ]),
-    ('AMERICAS', (118,93,59), [
-        'Alaska Senate victory boosts Democrats',
-        'Fed minutes warn of AI investment risks',
-        'US and Venezuela restore military ties',
-        'Argentina advances primary election bill',
-        'Brazil isolated Awa group makes rare contact',
-        'Haiti assassination case ends in conviction',
-    ]),
-]
-N_FEATURED = len(LEADS) + len(PICKS)
-N_WIRE = sum(len(items) for _,_,items in DESKS)
-N_STORIES = N_FEATURED+N_WIRE
-assert (len(LEADS),len(PICKS),N_WIRE,N_STORIES)==(3,10,27,40)
+# Strict layouts: bounded font rendering avoids glyphs crossing story regions.
+def fit_safe(c,text,x,y,w,h,family='b',sizes=(18,16,15,14,13,12,11,10),color=INK3,
+             lines=3):
+    for size in sizes:
+        if family+str(size) not in FONT_META:continue
+        wrapped=wrap_words(text,family,size,w)
+        step=max(size+1,int(round(size*1.10)))
+        if len(wrapped)<=lines and len(wrapped)*step<=h:
+            for j,s in enumerate(wrapped):
+                c.text(s,x,y+j*step,family,size,color,clip=(x,y,x+w,y+h))
+            return size
+    # Never spill text; hard-clipped and ellipsized at the smallest available size.
+    size=next(i for i in reversed(tuple(sizes)) if family+str(i) in FONT_META)
+    step=max(size+1,int(round(size*1.10)))
+    wrapped=wrap_words(text,family,size,w)[:min(lines,h//step)]
+    if wrapped:
+        if len(wrap_words(text,family,size,w))>len(wrapped):
+            tail=wrapped[-1]
+            while tail and text_width(tail+'...',family,size)>w:tail=tail[:-1]
+            wrapped[-1]=tail+'...'
+        for j,s in enumerate(wrapped):c.text(s,x,y+j*step,family,size,color,clip=(x,y,x+w,y+h))
+    return size
 
 def polygon(c, points, color):
     if len(points) < 3:
@@ -2963,6 +2966,51 @@ def typeset(c,text,x,y,w,h,family,sizes,color,max_lines=2,leading=1.10):
     raise ValueError('Not fitting: '+repr(text))
 
 
+def flag_star(c, cx, cy, outer, color):
+    """Rasterized five-point star; no fonts or external assets."""
+    pts=[]
+    for j in range(10):
+        a=-math.pi/2+j*math.pi/5
+        r=outer if j%2==0 else outer*.42
+        pts.append((cx+math.cos(a)*r,cy+math.sin(a)*r))
+    polygon(c,pts,color)
+
+
+def summit_flag(c, country, cx, y):
+    """Recognizable miniature national flags (46x24) for the summit art."""
+    x = cx - 23
+    w,h=46,24
+    if country == 'US':
+        # Thirteen horizontal red/white stripes; blue canton with white stars.
+        for row in range(13):
+            y0=y+row*h//13
+            y1=y+(row+1)*h//13
+            c.rect(x,y0,x+w,y1,(178,34,52) if row%2==0 else (249,249,247))
+        c.rect(x,y,x+20,y+13,(52,65,113))
+        for yy in (y+3,y+6,y+9,y+12):
+            for xx in (x+3,x+7,x+11,x+15,x+18):
+                c.rect(xx,yy,xx+1,yy+1,(255,255,255))
+    elif country == 'CN':
+        # Large yellow star + four smaller stars on red, as on China's flag.
+        c.rect(x,y,x+w,y+h,(222,41,35))
+        flag_star(c,x+12,y+9,5.7,(255,222,55))
+        for dx,dy in ((23,4),(28,8),(28,15),(23,20)):
+            flag_star(c,x+dx,y+dy,2.0,(255,222,55))
+    elif country == 'RU':
+        # White-blue-red horizontal tricolor, not monochrome blocks.
+        c.rect(x,y,x+w,y+8,(253,253,252))
+        c.rect(x,y+8,x+w,y+16,(0,57,166))
+        c.rect(x,y+16,x+w,y+h,(213,43,30))
+    else:
+        raise ValueError(country)
+    # Contrasting 1 px border so the Russian white stripe stays visible.
+    border=(224,231,230)
+    c.rect(x-1,y-1,x+w+1,y,border)
+    c.rect(x-1,y+h,x+w+1,y+h+1,border)
+    c.rect(x-1,y,x,y+h,border)
+    c.rect(x+w,y,x+w+1,y+h,border)
+
+
 def illustration(c,which,x,y,w,h):
     if which == 'summit':
         c.gradient(x,y,x+w,y+h,(34,53,67),(75,94,95))
@@ -2971,9 +3019,9 @@ def illustration(c,which,x,y,w,h):
             c.rect(xx,y+h-hg,xx+w//11+3,y+h,(28,49,58))
             for wx in range(xx+5,xx+w//11,9):
                 for wy in range(y+h-hg+10,y+h-3,13):c.rect(wx,wy,wx+3,wy+4,(118,145,139))
-        for i,bg in enumerate(((237,232,215),(167,58,58),(230,233,236))):
+        for i,country in enumerate(('US','CN','RU')):
             cx=x+54+i*105
-            c.rect(cx-18,y+8,cx+18,y+22,bg)
+            summit_flag(c,country,cx,y+6)
             disc(c,cx,y+44,10,(218,178,145))
             polygon(c,[(cx-23,y+81),(cx-18,y+61),(cx-7,y+57),(cx,y+63),(cx+8,y+56),(cx+18,y+63),(cx+23,y+81)],(28,39,46))
             c.rect(cx-23,y+78,cx+23,y+93,(27,39,45))
@@ -3103,147 +3151,103 @@ def icon_scene(c,topic,ix,x,y,w,h):
     c.rect(x,y+h-2,x+w,y+h,(243,225,190))
 
 
-def pick_panel(c,x,y,w,num,item):
-    loc,headline,topic=item
-    palette={'CLIMATE':(92,119,89),'WAR':(146,81,64),'TRADE':(55,107,107),'POLITICS':(117,80,81),'HEALTH':(78,108,105),'TECH':(65,88,118),'SCIENCE':(114,88,118)}
-    accent=palette[topic]
-    c.rect(x,y,x+w,y+105,SHEET)
-    # 10 unique visual icons, with legible identity and hard-bounded title below.
-    icon_scene(c,topic,num-4,x+3,y+3,w-6,40)
-    c.rect(x+6,y+8,x+41,y+40,(27,40,42))
-    c.text(f'{num:02d}',x+10,y+11,'b',22,(255,247,229))
-    place,_,subject=loc.partition(' / ')
-    # Labels over illustration with enough contrast for tiny thumbnails.
-    c.rect(x+45,y+8,x+124,y+36,(28,48,55))
-    c.text(place[:15],x+49,y+9,'b',9,(254,248,237),clip=(x+49,y+8,x+122,y+22))
-    c.text(subject[:12],x+49,y+23,'b',9,(238,191,128),clip=(x+49,y+21,x+122,y+38))
-    # Leave 53px for 3-4-line bold news headline; no overlap with illustration.
-    c.rect(x+6,y+46,x+9,y+91,accent)
-    typeset(c,headline,x+16,y+49,w-23,47,'b',[15,14,13,12,11,10],INK3,4,1.04)
-    c.rect(x+8,y+100,x+w-8,y+101,RULE3)
+def court_scene(c,x,y,w,h):
+    c.gradient(x,y,x+w,y+h,(49,65,80),(124,128,126))
+    c.rect(x,y+h-21,x+w,y+h,(40,55,66))
+    # courthouse silhouette, based on no single copyrighted image
+    polygon(c,[(x+18,y+49),(x+w//2,y+13),(x+w-18,y+49)],(224,211,181))
+    c.rect(x+24,y+47,x+w-24,y+57,(243,230,203))
+    for j in range(6):
+        cx=x+43+j*(w-86)//5
+        c.rect(cx-8,y+56,cx+8,y+h-31,(232,222,204))
+        c.rect(cx-12,y+h-36,cx+12,y+h-30,(204,194,177))
+    c.rect(x+20,y+h-29,x+w-20,y+h-24,(243,225,196))
+    c.rect(x+14,y+h-25,x+w-14,y+h-18,(193,179,156))
+    c.rect(x+80,y+12,x+w-80,y+35,(32,54,68))
+    fit_safe(c,'ICJ',x+w//2-17,y+14,44,23,'b',(20,18), (246,237,213),1)
 
-def map_and_chart(c,x,y,w,h):
-    c.rect(x,y,x+w,y+h,(38,57,64))
-    c.text('WHERE IT HAPPENED',x+12,y+11,'b',12,(242,244,233))
-    c.text('DATELINES / 19 NOV',x+12,y+30,'b',10,(204,225,218))
-    for i in range(1,5):
-        c.line(x+7,y+43+i*34,x+w-8,y+43+i*34,(57,80,85),1)
-    for i in range(1,5):
-        c.line(x+6+i*40,y+44,x+6+i*40,y+202,(57,80,85),1)
-    shapes=[
-        [(10,39),(36,22),(71,32),(87,56),(75,70),(59,64),(41,81),(20,62)],
-        [(59,83),(79,89),(91,116),(82,151),(67,134),(57,103)],
-        [(111,37),(126,26),(138,34),(138,54),(124,60)],
-        [(124,67),(146,69),(163,95),(151,136),(132,125)],
-        [(137,27),(173,21),(202,34),(213,55),(194,71),(167,65),(149,78),(135,54)],
-        [(181,130),(203,125),(215,142),(203,153),(185,143)],
-    ]
-    ox=x+6; oy=y+47
-    xs=(w-14)/220; ys=158/165
-    for shp in shapes:
-        polygon(c,[(ox+int(a*xs),oy+int(b*ys)) for a,b in shp],(135,164,148))
-    for mx,my in ((29,65),(51,113),(133,48),(161,94),(187,44),(147,120),(203,140)):
-        disc(c,ox+int(mx*xs),oy+int(my*ys),3.0,(242,171,104))
-    c.rect(x+12,y+h-65,x+w-12,y+h-64,(92,112,111))
-    c.text('THIS EDITION: 40 STORIES',x+12,y+h-58,'b',10,(240,236,221))
-    # Counts are of stories *within this poster*, not world metrics.
-    vals=[len(items) for _,_,items in DESKS]+[N_FEATURED]
-    cols=(TEAL3,(165,95,62),BLUE3,(131,88,97),(118,93,59),(222,174,113))
-    barw=w-24; start=x+12
-    for n,col in zip(vals,cols):
-        width=int(barw*n/N_STORIES)
-        c.rect(start,y+h-35,start+width,y+h-22,col)
-        start+=width
-    c.text('27 REGIONAL + 13 FEATURED',x+12,y+h-18,'b',9,(223,228,216))
+def hero_art(c,kind,x,y,w,h):
+    if kind=='court': court_scene(c,x,y,w,h)
+    else: illustration(c,kind,x,y,w,h)
+
+def hero(c,x,y,w,story,n):
+    """Prominent illustrated headline. Every text box is hard-clipped."""
+    loc,heading,dek,source,kind=story
+    c.rect(x,y,x+w,y+297,SHEET)
+    # Keep the illustration informative, but give more vertical room to copy.
+    hero_art(c,kind,x+3,y+3,w-6,122)
+    c.rect(x+9,y+133,x+14,y+151,RED3)
+    fit_safe(c,f'{n:02d} / {loc}',x+23,y+133,w-30,19,'b',(13,12,11),RED3,1)
+    fit_safe(c,heading,x+9,y+157,w-18,75,'b',(26,22,20,18),INK3,3)
+    # Larger body text than R5; no intentional overflow or ellipsis.
+    fit_safe(c,dek,x+9,y+237,w-18,50,'r',(16,15,14),FADE,3)
+    c.rect(x+9,y+291,x+w-9,y+292,RULE3)
 
 
-def desk_symbol(c,x,y,which,color):
-    ink=(255,255,250)
-    c.roundrect(x,y,x+18,y+18,3,color)
-    if which==0: # sunrise/Asia
-        disc(c,x+9,y+10,4,ink)
-        c.line(x+2,y+14,x+16,y+14,ink)
-    elif which==1: # oil tower/Middle East
-        c.line(x+9,y+3,x+4,y+15,ink,2);c.line(x+9,y+3,x+14,y+15,ink,2)
-        c.line(x+5,y+10,x+13,y+10,ink)
-    elif which==2: # parliament/Europe
-        polygon(c,[(x+3,y+6),(x+9,y+2),(x+15,y+6)],ink)
-        for q in (5,9,13):c.rect(x+q-1,y+7,x+q+1,y+14,ink)
-        c.line(x+2,y+15,x+16,y+15,ink)
-    elif which==3: # Africa landscape
-        disc(c,x+12,y+5,3,ink)
-        polygon(c,[(x+1,y+15),(x+6,y+8),(x+10,y+14),(x+14,y+11),(x+18,y+15)],ink)
-    else: # Americas skyscrapers
-        for q,hh in ((3,8),(7,13),(12,10)):
-            c.rect(x+q,y+16-hh,x+q+3,y+16,ink)
+def editor_card(c,x,y,w,item,n):
+    """Mini illustration + prominent location label + 2-line brief."""
+    loc,heading,ix,source=item
+    c.rect(x,y,x+w,y+107,SHEET)
+    icon_scene(c,'NEWS',ix,x+4,y+4,w-8,43)
+    c.rect(x+7,y+6,x+37,y+32,(31,43,45))
+    fit_safe(c,f'{n:02d}',x+12,y+8,25,23,'b',(17,16),SHEET,1)
+    c.rect(x+3,y+51,x+6,y+101,RED3)
+    fit_safe(c,loc,x+13,y+52,w-20,17,'b',(12,11,10),RED3,1)
+    fit_safe(c,heading,x+13,y+70,w-21,32,'b',(16,15,14,13),INK3,2)
+    c.rect(x+6,y+105,x+w-6,y+106,RULE3)
 
-
-def desk_column(c,x,y,w,name,accent,headlines,index):
-    c.rect(x,y,x+w,y+23,(232,229,220))
-    c.rect(x,y,x+4,y+23,accent)
-    which=next(i for i,desk in enumerate(DESKS) if desk[0]==name)
-    desk_symbol(c,x+7,y+3,which,accent)
-    typeset(c,name,x+30,y+5,w-33,14,'b',[12,11,10],INK3,1)
-    n=len(headlines)
-    row_height=40 if n==6 else 48
-    for i,headline in enumerate(headlines):
-        yy=y+25+i*row_height
-        c.text(f'{index+i+1:02d}',x+1,yy+2,'b',10,RED3)
-        typeset(c,headline,x+22,yy+2,w-24,row_height-5,'r',[13,12,11,10],INK3,3,1.05)
-        c.rect(x,yy+row_height-1,x+w,yy+row_height,RULE3)
 
 def render():
     c=Canvas(color=PAPER)
-    # Newspaper masthead / date, tuned for thumbnail recognition.
-    c.rect(24,14,33,24,RED3)
-    c.text('THE WORLD IN ONE DAY',41,13,'b',12,RED3)
-    c.text('ISSUE 326   |   40 STORIES   |   GLOBAL DESK',703,14,'b',10,FADE)
-    c.rect(24,34,1000,36,INK3)
-    c.text('Thursday',24,37,'b',48,INK3)
-    c.text('19 November 2026',267,43,'b',39,INK3)
-    c.text('World leaders meet  /  War and diplomacy  /  Markets and the climate',28,93,'r',13,FADE)
-    c.rect(24,115,1000,119,INK3)
-    sections=[('ASIA-PACIFIC',6),('MIDDLE EAST',5),('EUROPE',5),('AFRICA',5),('AMERICAS',6),('WORLD / MIX',13)]
-    for i,(name,count) in enumerate(sections):
-        xx=26+i*163
-        if i:c.rect(xx-9,125,xx-8,153,RULE3)
-        c.text(f'{count:02d}',xx,125,'b',22,RED3 if i in (0,5) else INK3)
-        c.text(name,xx+31,132,'b',10,FADE)
-    c.rect(24,158,1000,159,RULE3)
-    c.text('THE LEAD STORIES',24,165,'b',13,INK3)
-    c.text('THURSDAY WORLD REPORT / 3 MAJOR DEVELOPMENTS',686,166,'b',10,RED3)
-    c.rect(24,185,1000,186,RULE3)
-    for i,item in enumerate(LEADS):lead_panel(c,24+i*329,192,318,item)
-    c.rect(24,427,1000,429,INK3)
-    c.text("EDITOR'S SELECTION",24,433,'b',14,INK3)
-    c.text('10 MORE STORIES / CLIMATE + WAR + TRADE + JUSTICE',657,438,'b',9,RED3)
-    c.rect(24,456,1000,457,RULE3)
-    for i,item in enumerate(PICKS):
-        row,col=divmod(i,5)
-        pick_panel(c,24+col*197,464+row*110,188,i+4,item)
-    c.rect(24,686,1000,688,INK3)
-    c.text('THE WORLD WIRE',24,692,'b',16,INK3)
-    c.text('27 REPORTS / FIVE REGIONAL DESKS / 19 NOVEMBER 2026',593,698,'b',9,RED3)
-    c.rect(24,715,1000,716,RULE3)
-    map_and_chart(c,24,722,216,266)
-    idx=13
-    for col,(name,tint,items) in enumerate(DESKS):
-        desk_column(c,248+col*151,722,146,name,tint,items,idx)
-        idx+=len(items)
-    assert idx == 40
-    c.rect(24,998,1000,999,INK3)
-    c.text('WORLD NEWS / 19 NOV 2026 / EDITORIAL SOURCES IN README',24,1001,'b',9,FADE)
-    c.text('HAND-DRAWN VECTOR ART / 1024 X 1024',763,1001,'b',9,FADE)
-    return c
+    c.rect(0,0,1024,7,RED3)
+    c.text('THE WORLD IN ONE DAY',24,17,'b',13,RED3)
+    c.text('GLOBAL EDITION / 25 REPORTS',794,19,'b',11,FADE)
+    c.rect(24,38,1000,40,INK3)
+    c.text('Thursday',24,48,'b',48,INK3)
+    c.text('19 November 2026',260,56,'b',36,INK3)
+    c.rect(24,112,1000,114,INK3)
 
+    # Removed the 85-pixel slogan/map strip from R5. The saved room is
+    # reserved for larger text and greater leading rather than more stories.
+    c.text('THE BIG THREE',24,122,'b',16,INK3)
+    c.text('DIPLOMACY  /  FINANCE  /  JUSTICE',667,126,'b',11,RED3)
+    c.rect(24,150,1000,151,RULE3)
+    for i,story in enumerate(LEADS):
+        hero(c,24+i*329,157,318,story,i+1)
+
+    c.rect(24,464,1000,466,INK3)
+    c.text("EDITOR'S SELECTION",24,474,'b',16,INK3)
+    c.text('8 REPORTS   /   CLIMATE   /   CONFLICT   /   TRADE',589,479,'b',10,RED3)
+    c.rect(24,510,1000,511,RULE3)
+    for i,story in enumerate(PICKS):
+        r,k=divmod(i,4)
+        editor_card(c,24+k*247,518+r*112,236,story,i+4)
+
+    c.rect(24,743,1000,745,INK3)
+    c.text('THE WORLD WIRE',24,753,'b',17,INK3)
+    c.text('14 BRIEFS FROM SEVEN REGIONS',715,759,'b',10,RED3)
+    c.rect(24,785,1000,786,RULE3)
+    for i,(name,accent,items) in enumerate(DESKS):
+        x=24+i*141;w=135;y=792
+        c.rect(x,y,x+w,y+29,(227,226,215))
+        c.rect(x,y,x+5,y+29,accent)
+        fit_safe(c,name,x+9,y+6,w-12,20,'b',(13,12,11),INK3,1)
+        for k,item in enumerate(items):
+            yy=y+34+k*92
+            c.text(f'{12+i*2+k:02d}',x+2,yy+5,'b',12,RED3)
+            fit_safe(c,item,x+24,yy+4,w-26,84,'r',(18,17,16,15),INK3,5)
+            c.rect(x,yy+89,x+w,yy+90,RULE3)
+
+    c.rect(24,1011,1000,1013,INK3)
+    c.text('19 NOVEMBER 2026   /   REPORTING CREDITS IN SOURCES.md',24,1015,'b',9,FADE)
+    c.text('PURE PYTHON STDLIB  /  1024 x 1024',760,1015,'b',9,FADE)
+    return c
 
 def main():
     output=Path(os.environ.get('OUTPUT_PATH','/output/entry.png'))
     render().save_png(output)
     size=output.stat().st_size
-    if size >= 1_048_576:
-        raise RuntimeError('Output exceeds 1 MiB limit: '+str(size))
-    print(f'Generated {output}: {size} bytes / {N_STORIES} stories / 1024x1024 / stdlib only')
+    if size>=1_048_576:raise RuntimeError('Output exceeds 1 MiB')
+    print(f'Generated {output} / {size} bytes / {N_STORIES} news stories / stdlib')
 
-if __name__=='__main__':
-    main()
+if __name__=='__main__':main()
